@@ -1,0 +1,337 @@
+---
+title: "Programming basics"
+author:
+  - Byron C. Jaeger^[University of Alabama at Birmingham, bcjaeger@uab.edu]
+output: 
+  html_document:
+    df_print: paged
+    highlight: tango
+    code_folding: hide
+    toc: true
+    toc_float: true
+    theme: united
+    fig_width: 7
+    fig_height: 4
+---
+
+# Overview
+
+# Packages
+
+The `coronavirus` data are provided in the `coronavirus` package. (Yes, they are both named `coronavirus`). We will also use the `tidyverse`, `knitr`, and `kableExtra` packages (see rationale below) 
+
+```{r, message = FALSE, echo = TRUE}
+
+# tell knitr to use the project working directory
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+
+
+library(tidyverse)    # for tidying
+library(coronavirus)  # for data
+library(knitr)        # introducing you to the kable function 
+library(kableExtra)   # nice styling layouts for kable
+
+data("coronavirus", package = 'coronavirus')
+
+covid19 <- as_tibble(coronavirus)
+
+covid19
+
+```
+__Data source__: [Johns Hopkins University Center for Systems Science and Engineering (JHU CCSE) Coronavirus](https://systems.jhu.edu/research/public-health/ncov/).
+
+The `coronavirus` package provides a daily summary of the Coronavirus (COVID-19) cases by state/province. 
+
+```{r}
+
+# this code is something of a preview for lessons we will cover later on.
+# first it should be clear that comments are something you need to embrace.
+# thoroughly commented code is the biggest favor you can do for your future
+# self. Second, it should be clear that the code you write should be easy
+# to read. Indents, new lines, and spaces are all important for readability,
+# especially when you share code in Rmd blocks, which have limited horizontal space ------------------------------------------------------------------------------------ how annoying was it was to scroll over here? Making your code vertical will make the person reading (or grading) your work much happier and much more generous with partial credit.
+
+# note the conventions followed with creating this vector.
+# 1. there is one item per line.
+# 2. assignment operators are aligned for long/short names, separately.
+# 3. beginning and ending () have their own lines.
+# 4. the name of the object I am making is informative
+#     - covid19 is an object in my environment
+#     - descr indicates that the object I am making will describe covid19
+#     - this makes it easy for a person reading my work to understand the
+#       layout of the environment I am creating in this document. 
+
+covid19_descr <- c(
+  "Province.State" = "The province or state, when applicable",
+  "Country.Region" = "The country or region name",
+  "Lat"   = "Latitude point",
+  "Long"  = "Longitude point",
+  "date"  = "The date of the summary",
+  "cases" = "the number of daily cases (corresponding to the case type)",
+  "type"  = "the type of case (i.e., confirmed, death)"
+)
+
+# this is a peek into something we will cover in more detail later
+
+# enframe() is a function that converts a vector into a data frame.
+# The data frame has two columns: 
+#  name: names of the vector
+#  value: values of the vector
+
+# kable() is a function that converts data frames into html or latex code.
+# this is particularly useful for Rmd documents when you have to tabulate
+# your results. The col.names argument lets you specify column labels.
+
+# the kable_styling() function is purely aesthetic. I always use it the 
+# same way and rarely change the style to anything else.
+
+
+# here are the three functions in action
+enframe(covid19_descr) %>% 
+  kable(col.names = c('Variable', 'Description')) %>% 
+  kable_styling(bootstrap_options = c('striped', 'hover'))
+
+```
+__Note__: data were last updated on `r as.Date(max(covid19$date))`
+
+# Pre-requisites
+
+Before starting these exercises, you should have a good understanding of 
+
+1. The [Programming Basics](https://rstudio.cloud/learn/primers/1.2) Primer.
+
+1. Chapter 4 of [R for Data Science](https://r4ds.had.co.nz/workflow-basics.html)
+
+
+# Exercise 1
+
+Everything in R is a function. Learning to think in functional terms will make R a much more accessible language: 
+
+__Functions map a set of inputs to an output__. For example, addition maps a set of input numbers into a single output number. The addition function is easier to interpret when it is used as an expression:
+
+```{r}
+
+1 + 1
+
+```
+
+But what happens under the hood is that the code above is translated from the neat expression syntax into an explicit function syntax, _i.e._, `function(input1, input2, more inputs separated by commas)`
+
+```{r}
+
+# the two tick marks are used to tell R that I want to use the addition
+# function. Tick marks are only needed when the thing you want to reference
+# has an improper name (i.e., a name with symbols)
+`+`(1, 1)
+
+```
+
+One of the neatest thing about R is that you can write your own functions
+
+```{r}
+
+add_nums <- function(x,y){ x + y } 
+
+add_nums(x = 1, y = 1)
+
+```
+
+__Inputs are ingredients__. You can change the flavor of your ingredients and make your meal just how you want it, but you will break something if you try to change the types of your ingredients. For example, if a recipe calls for flour and I supply a brick, my blender will break. In this case, my addition function calls for a number and I will instead give it a `"character"`.  
+
+```{r, error = TRUE}
+
+add_nums(x = 1, y = "a")
+
+```
+
+__Outputs are products__. You can save outputs to your workspace or just print them to your console, like so:
+
+```{r}
+
+# this will save the output of my function to an object
+# the object's name is answer, which means I can access this 
+# particular output by accessing the answer object. 
+answer <- 1 + 1
+
+# For example, I can now take answer and use it as an input
+# to the print() function, which will print input to the console.
+print(answer)
+
+```
+
+__Your turn__
+
+With the `covid19` object loaded into your environment, try applying the `summary()` to it. That is, let the `summary()` function be your recipe and make `covid19` the only ingredient. Describe the output to your neighbor.
+
+As a convenient shortcut, you can run all the code prior to a given point in your Rmd document by placing your cursor at a certain point and then pressing `Alt + Ctrl + p`. Try it: place your cursor here (by clicking) and then press the keys. You can also run code in a specific Rmd code block by placing your cursor in the block and pressing `Alt + Ctrl + c`
+
+Your output should look like this:
+```{r}
+
+read_rds('solutions/01_solution.rds')
+
+```
+
+```{r}
+
+# your code goes here
+
+```
+
+# Exercise 2
+
+Data analysis is largely conducted using __vectors__, which you can think of as containers for data. In R, there are four _primary_ types of data: 
+
+- logical (true and false values), 
+
+- integer (whole numbers), 
+
+- double (real numbers) 
+
+- character (strings). 
+
+If a vector only has one type of data, it is called __atomic__. 
+Vectors with multiple types of data are called recursive vectors, 
+or __lists__. Vectors can also contain arbitrary additional metadata in the form of attributes. These attributes are used to create __augmented vectors__ which build on additional behaviour. There are three important types of augmented vector:
+
+- Factors are built on top of integer vectors.
+
+- Dates and date-times are built on top of numeric vectors.
+
+- Data frames and tibbles are built on top of lists.
+
+`covid19` is a list with `r ncol(covid19)` elements. Using what you know about accessing list elements, create two new vectors: 
+
+1. `vec_date` the `date` values of `covid19`
+1. `vec_cases` the `cases` values of `covid19`
+
+Your output should look like this:
+
+- the first 10 `vec_date` values
+
+```{r}
+
+read_rds('solutions/02_solution_date.rds')[1:10]
+
+```
+
+- the first 10 `vec_cases` values
+
+```{r}
+
+read_rds('solutions/02_solution_cases.rds')[1:10]
+
+```
+
+```{r}
+
+# your code goes here
+
+```
+
+
+# Exercise 3
+
+With your vector of date values, determine how many rows of data were provided for March 20th, 2020. To do this, you will need to
+
+1. apply square bracket subsets (*i.e.*, `vec_date[condition]`) to create a subset of `vec_date` that only contains values equal to `'2020-03-20'`
+
+1. apply the `length()` function to the object you created.
+
+The answer is __`r read_rds('solutions/03_solution.rds')`__.
+
+```{r}
+
+# your code goes here
+
+```
+
+# Exercise 4
+
+When you created the subset of `vec_date` in the exercise above, you almost certainly used a logical condition, which in turn created a logical vector of `TRUE` and `FALSE` values. In R, logical values can be treated like numeric values of 0 (`FALSE`) and 1 (`TRUE`).
+
+```{r}
+
+# casting
+as.numeric(TRUE)
+# coercion
+c(5, TRUE, FALSE)
+# implicit coercion
+sum(c(5, TRUE, FALSE))
+
+```
+
+Create a logical vector and then pass it into the `sum` function to do exercise 3 in a more concise way (i.e., your solution will require less code).
+
+# Exercise 5
+
+Determine the number of cases that occurred in the United States, _i.e._, rows in `covid19` where `Country.Region == 'US'`, on March 25, 2020.
+
+__Hints__: 
+
+1. This will build on the code from exercises 3 and 4.
+1. You may want to save another vector to your global environment. (a vector of `Country.Region` values)
+1. One way to approach this is to do the following: 
+
+    + make a vector that contains just the case values from the US.
+    
+    + make another vector containing just the date values from the US
+    
+    + Use these two vectors to subset the US case values to contain only the elements where US date is equal to `'2020-03-25'`
+
+Note that when you have completed the steps above, you will be left with two values. The first value is the number of cases confirmed, and the second is the number of deaths. Subset this vector to contain only the first number. 
+
+The answer is __`r read_rds('solutions/05_solution.rds')`__
+
+```{r}
+
+# your code goes here
+
+```
+
+
+# Exercise 6
+
+Compute the total number of deaths in the US from COVID-19.
+
+__Hints:__
+
+1. A good start would be creating a vector that contains the `type` values in `covid19`, and then subsetting that to contain only the `type` values from the US. 
+1. The vector of US cases will be helpful here, and can be subsetted to contain only the death values using the vector of US `type` values. 
+
+The answer is __`r read_rds('solutions/06_solution.rds')`__
+
+```{r}
+
+# your code goes here
+
+```
+
+
+<!-- The `tidyverse` provides a lot of functions with consistent input and output. For example, many of the functions in the `dplyr` package require that the first input of a function be a data frame. Additionally, almost all of the `dplyr` functions output is a data frame. To illustrate, we will use the `count()` function, which takes two primary inputs:  -->
+
+<!-- - `x` a data frame. -->
+
+<!-- - `...` variables to define groups.  -->
+
+<!-- The output of `count()` is a data frame with number of rows equal to the number of groups defined by `...`. The values in the returned dataframe will tell you how many observations are in each group. -->
+
+
+<!-- ```{r} -->
+
+<!-- count(x = covid19, Country.Region) -->
+
+<!-- ``` -->
+
+
+<!-- ```{r} -->
+
+<!-- count(x = covid19, Province.State, Country.Region) -->
+
+<!-- ``` -->
+
+
+
+
+
+
