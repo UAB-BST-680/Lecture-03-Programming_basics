@@ -16,6 +16,7 @@ output:
 
 # Overview
 
+
 # Packages
 
 The `coronavirus` data are provided in the `coronavirus` package. (Yes, they are both named `coronavirus`). We will also use the `tidyverse`, `knitr`, and `kableExtra` packages (see rationale below) 
