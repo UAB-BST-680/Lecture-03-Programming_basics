@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Programming basics</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Byron C. Jaeger" />
+    <link rel="stylesheet" href="slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Programming basics
+## Introduction to vectors
+### Byron C. Jaeger
+### last updated: 2020-04-07
+
+---
+
+
+
+
+## Catch up
+
+- Any questions on material from last time?
+
+- Any questions on the reading / primer?
+
+---
+
+## Agenda
+
+.pull-left[
+
+- Functions
+
+- Environments
+
+- Vectors
+
+Full disclosure: 
+
+- These topics are extremely important. 
+
+- They may also seem boring and useless at first. 
+
+- Stay vigilant!
+
+]
+
+.pull-right[
+
+&lt;img src="img/bored.png" width="90%" /&gt;
+
+]
+
+
+
+
+
+
+---
+
+class: inverse, center, middle
+
+# Functions
+
+---
+
+## What is a function?
+
+A function starts with inputs, applies a process, and returns an output.
+
+- Functions are everywhere. Do you recognize this one? 
+
+    + inputs: eggs, chocolate chips, flour, sugar and butter
+    
+    + process: preheat oven, mix ingredients, bake, let cool.
+    
+    + outputs: 12 cookies
+    
+---
+
+## What is a function?
+
+In R, the function output is usually assigned to a new variable, e.g.
+
+
+```r
+cookie_batch &lt;- make_cookies(batch_size = 12)
+```
+
+A command like this would create a new object in my global environment that can be accessed in subsequent commands.
+
+
+```r
+byron &lt;- add_food(to = byron, what = cookie_batch)
+```
+
+Note how the object `byron` is modified by the line of code above, and the output is also called `byron`. Is this syntax confusing? It usually takes some getting used to. 
+
+
+---
+
+## What is an environment?
+
+R stores objects in environments (think of these like containers). 
+
+- Your workspace is the `global environment`. This is where objects are stored by default:
+
+
+```r
+x &lt;- 1:5
+```
+
+- Dataframes and lists create their own environments: 
+
+
+```r
+df &lt;- tibble(x = c('a','b','c','d','e'))
+```
+
+After running these two lines of code, what do you think R will do if we ask it to print `x`?
+
+--
+
+
+```r
+x
+```
+
+```
+## [1] 1 2 3 4 5
+```
+
+
+---
+
+## What is an environment?
+
+R stores objects in environments (think of these like containers). 
+
+- Your workspace is the `global environment`. This is where objects are stored by default:
+
+
+```r
+x &lt;- 1:5
+```
+
+- Dataframes and lists create their own environments: 
+
+
+```r
+df &lt;- tibble(x = c('a','b','c','d','e'))
+```
+
+So then how do we access `x` inside of the dataframe we made??
+
+--
+
+
+```r
+df$x
+```
+
+```
+## [1] "a" "b" "c" "d" "e"
+```
+
+---
+class: inverse, center, middle
+
+# Vectors
+
+---
+## Atomic vectors
+
+
+- A lot of the analysis we do in R can be boiled down to atomic vectors, these are
+
+    + logical: `TRUE`, `FALSE`
+    
+    + integer: ..., -2, -1, 0, 1, 2, ...
+    
+    + double: 1, 1.23, 5.0001, etc.
+    
+    + character: "a", "any string", "1", etc.
+
+
+To create an atomic vector manually, use the `c()` function, short for combine, concatenate, and coerce, depending on how it is used. 
+
+
+```r
+# Atomic vector examples -- # full name - abbreviation
+lgl_var &lt;- c(TRUE, FALSE)   # logical   = lgl
+int_var &lt;- c(1L, 6L, 10L)   # integer   = int
+dbl_var &lt;- c(1, 2.5, 4.5)   # double    = dbl
+chr_var &lt;- c("a", "b", "c") # character = chr
+```
+
+---
+
+## Logical vectors
+
+- Logical values must be either `TRUE` or `FALSE`. 
+
+- R evaluates logical values with operations similar to numeric values, but with some additional symbols that allow you to engage with logical structures.
+
+&lt;img src="img/transform-logical.png" width="90%" /&gt;
+
+---
+
+## Logical vectors
+
+
+```r
+x &lt;- TRUE; y &lt;- FALSE
+
+# either is true
+x | y
+```
+
+```
+## [1] TRUE
+```
+
+
+&lt;img src="img/transform-logical.png" width="90%" /&gt;
+
+---
+
+## Logical vectors
+
+
+```r
+x &lt;- TRUE; y &lt;- FALSE
+
+# both are true
+x &amp; y
+```
+
+```
+## [1] FALSE
+```
+
+
+&lt;img src="img/transform-logical.png" width="90%" /&gt;
+
+---
+
+## Logical vectors
+
+
+```r
+x &lt;- TRUE; y &lt;- FALSE
+
+# exactly one is true
+xor(x, y)
+```
+
+```
+## [1] TRUE
+```
+
+
+&lt;img src="img/transform-logical.png" width="90%" /&gt;
+
+---
+
+## Integer and double vectors
+
+- These two types are collectively called `numeric` vectors. 
+
+- logicals are coerced into `integer` types, which in turn are coerced to `double`, when these types are combined:
+
+
+```r
+c(TRUE, FALSE, 2L, pi)
+```
+
+```
+## [1] 1.000000 0.000000 2.000000 3.141593
+```
+
+
+---
+
+## Character vectors
+
+Character values in R represent strings
+
+- surrounded by `"` (`"hi"`) or `'` (`'bye'`). 
+
+- You can create strings with either  single quotes or double quotes.
+
+- I recommend always using `"` to create strings and then using `'` if you have a quote inside of your string.
+
+
+```r
+string1 &lt;- "a string"
+string1
+```
+
+```
+## [1] "a string"
+```
+
+
+
+```r
+string2 &lt;- "a 'string' value"
+string2
+```
+
+```
+## [1] "a 'string' value"
+```
+
+---
+
+## Indexing vectors
+
+Data from vectors can be subset using square brackets: `[]`
+
+
+```r
+x &lt;- c(0, 5, 10)
+
+x[1]
+```
+
+```
+## [1] 0
+```
+
+```r
+x[c(2,3)]
+```
+
+```
+## [1]  5 10
+```
+
+
+---
+
+## Indexing vectors
+
+Logical values can also be used to subset vectors:
+
+
+```r
+x[c(TRUE, FALSE, FALSE)] # same as x[1]
+```
+
+```
+## [1] 0
+```
+
+```r
+x[c(FALSE, TRUE, TRUE)] # same as x[c(2,3)]
+```
+
+```
+## [1]  5 10
+```
+
+---
+
+## Indexing vectors
+
+Combining logical expressions with indexing is a nice trick:
+
+
+```r
+x[x &lt; 5] # returns all values of x &lt; 5
+```
+
+```
+## [1] 0
+```
+
+```r
+x[x &gt;= 5] # returns all values of x &gt;= 5
+```
+
+```
+## [1]  5 10
+```
+
+---
+## Summarizing vectors
+
+- `mean()`, `median()`, `min()`, `max()`, `sum()`,  and `table()` are all useful summary functions for vectors. 
+
+- `mean` and `sum` in particular can be useful for computing proportions and counts of `TRUE` conditions, for example:
+
+
+```r
+# the number of x values greater than 0
+sum(x &gt; 0)
+```
+
+```
+## [1] 2
+```
+
+```r
+# the proportion of x values greater than 0
+mean(x &gt; 0)
+```
+
+```
+## [1] 0.6666667
+```
+
+---
+
+## Your turn
+
+- Switch to Rstudio cloud and find the data visualization basics project. 
+
+- Work on completing the problems in `exercises.Rmd` with your teammates.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

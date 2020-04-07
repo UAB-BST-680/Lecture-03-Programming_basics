@@ -1,0 +1,393 @@
+---
+title: "Programming basics"
+subtitle: "Introduction to vectors"
+author: "Byron C. Jaeger"
+date: "last updated: `r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    css: "slides.css"
+    logo: img/intro_2R_hex.png
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  dpi = 300,
+  message = FALSE,
+  warning = FALSE
+)
+library(dplyr)
+library(magick)
+```
+
+## Catch up
+
+- Any questions on material from last time?
+
+- Any questions on the reading / primer?
+
+---
+
+## Agenda
+
+.pull-left[
+
+- Functions
+
+- Environments
+
+- Vectors
+
+Full disclosure: 
+
+- These topics are extremely important. 
+
+- They may also seem boring and useless at first. 
+
+- Stay vigilant!
+
+]
+
+.pull-right[
+
+```{r, echo = FALSE, out.width = '90%'}
+
+knitr::include_graphics("img/bored.png")
+
+```
+
+]
+
+
+
+
+
+
+---
+
+class: inverse, center, middle
+
+# Functions
+
+---
+
+## What is a function?
+
+A function starts with inputs, applies a process, and returns an output.
+
+- Functions are everywhere. Do you recognize this one? 
+
+    + inputs: eggs, chocolate chips, flour, sugar and butter
+    
+    + process: preheat oven, mix ingredients, bake, let cool.
+    
+    + outputs: 12 cookies
+    
+---
+
+## What is a function?
+
+In R, the function output is usually assigned to a new variable, e.g.
+
+```{r, eval = FALSE}
+
+cookie_batch <- make_cookies(batch_size = 12)
+
+```
+
+A command like this would create a new object in my global environment that can be accessed in subsequent commands.
+
+```{r, eval = FALSE}
+
+byron <- add_food(to = byron, what = cookie_batch)
+
+```
+
+Note how the object `byron` is modified by the line of code above, and the output is also called `byron`. Is this syntax confusing? It usually takes some getting used to. 
+
+
+---
+
+## What is an environment?
+
+R stores objects in environments (think of these like containers). 
+
+- Your workspace is the `global environment`. This is where objects are stored by default:
+
+```{r}
+
+x <- 1:5
+
+```
+
+- Dataframes and lists create their own environments: 
+
+```{r}
+df <- tibble(x = c('a','b','c','d','e'))
+```
+
+After running these two lines of code, what do you think R will do if we ask it to print `x`?
+
+--
+
+```{r}
+x
+```
+
+
+---
+
+## What is an environment?
+
+R stores objects in environments (think of these like containers). 
+
+- Your workspace is the `global environment`. This is where objects are stored by default:
+
+```{r}
+
+x <- 1:5
+
+```
+
+- Dataframes and lists create their own environments: 
+
+```{r}
+
+df <- tibble(x = c('a','b','c','d','e'))
+
+```
+
+So then how do we access `x` inside of the dataframe we made??
+
+--
+
+```{r}
+df$x
+```
+
+---
+class: inverse, center, middle
+
+# Vectors
+
+---
+## Atomic vectors
+
+
+- A lot of the analysis we do in R can be boiled down to atomic vectors, these are
+
+    + logical: `TRUE`, `FALSE`
+    
+    + integer: ..., -2, -1, 0, 1, 2, ...
+    
+    + double: 1, 1.23, 5.0001, etc.
+    
+    + character: "a", "any string", "1", etc.
+
+
+To create an atomic vector manually, use the `c()` function, short for combine, concatenate, and coerce, depending on how it is used. 
+
+```{r}
+
+# Atomic vector examples -- # full name - abbreviation
+lgl_var <- c(TRUE, FALSE)   # logical   = lgl
+int_var <- c(1L, 6L, 10L)   # integer   = int
+dbl_var <- c(1, 2.5, 4.5)   # double    = dbl
+chr_var <- c("a", "b", "c") # character = chr
+
+```
+
+---
+
+## Logical vectors
+
+- Logical values must be either `TRUE` or `FALSE`. 
+
+- R evaluates logical values with operations similar to numeric values, but with some additional symbols that allow you to engage with logical structures.
+
+```{r, echo = FALSE, out.width = '90%'}
+
+knitr::include_graphics("img/transform-logical.png")
+
+```
+
+---
+
+## Logical vectors
+
+```{r}
+x <- TRUE; y <- FALSE
+
+# either is true
+x | y
+
+```
+
+
+```{r, echo = FALSE, out.width = '90%'}
+
+knitr::include_graphics("img/transform-logical.png")
+
+```
+
+---
+
+## Logical vectors
+
+```{r}
+x <- TRUE; y <- FALSE
+
+# both are true
+x & y
+
+```
+
+
+```{r, echo = FALSE, out.width = '90%'}
+
+knitr::include_graphics("img/transform-logical.png")
+
+```
+
+---
+
+## Logical vectors
+
+```{r}
+x <- TRUE; y <- FALSE
+
+# exactly one is true
+xor(x, y)
+
+```
+
+
+```{r, echo = FALSE, out.width = '90%'}
+
+knitr::include_graphics("img/transform-logical.png")
+
+```
+
+---
+
+## Integer and double vectors
+
+- These two types are collectively called `numeric` vectors. 
+
+- logicals are coerced into `integer` types, which in turn are coerced to `double`, when these types are combined:
+
+```{r}
+
+c(TRUE, FALSE, 2L, pi)
+
+```
+
+
+---
+
+## Character vectors
+
+Character values in R represent strings
+
+- surrounded by `"` (`"hi"`) or `'` (`'bye'`). 
+
+- You can create strings with either  single quotes or double quotes.
+
+- I recommend always using `"` to create strings and then using `'` if you have a quote inside of your string.
+
+```{r}
+
+string1 <- "a string"
+string1
+
+```
+
+
+```{r}
+
+string2 <- "a 'string' value"
+string2
+
+```
+
+---
+
+## Indexing vectors
+
+Data from vectors can be subset using square brackets: `[]`
+
+```{r}
+
+x <- c(0, 5, 10)
+
+x[1]
+
+x[c(2,3)]
+
+```
+
+
+---
+
+## Indexing vectors
+
+Logical values can also be used to subset vectors:
+
+```{r}
+
+x[c(TRUE, FALSE, FALSE)] # same as x[1]
+
+x[c(FALSE, TRUE, TRUE)] # same as x[c(2,3)]
+
+```
+
+---
+
+## Indexing vectors
+
+Combining logical expressions with indexing is a nice trick:
+
+```{r}
+
+x[x < 5] # returns all values of x < 5
+
+x[x >= 5] # returns all values of x >= 5
+
+```
+
+---
+
+## Summarizing vectors
+
+- `mean()`, `median()`, `min()`, `max()`, `sum()`,  and `table()` are all useful summary functions for vectors. 
+
+- `mean` and `sum` in particular can be useful for computing proportions and counts of `TRUE` conditions, for example:
+
+```{r}
+
+# the number of x values greater than 0
+sum(x > 0)
+
+# the proportion of x values greater than 0
+mean(x > 0)
+
+```
+
+---
+
+## Your turn
+
+- Switch to Rstudio cloud and find the data visualization basics project. 
+
+- Work on completing the problems in `exercises.Rmd` with your teammates.
+
+
+
+
+
+
